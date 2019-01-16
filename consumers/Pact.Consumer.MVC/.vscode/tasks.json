@@ -1,0 +1,25 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "build",
+                "${workspaceFolder}/Pact.Consumer.MVC/Pact.Consumer.MVC.csproj"
+            ],
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "label": "Generate PACT contracts !",
+            "command": "dotnet test ${workspaceFolder}/Pact.Consumer.MVC.PactTests/Pact.Consumer.MVC.PactTests.csproj",
+            "type": "shell",
+            "group": "test",
+            "presentation": {
+                "reveal": "silent"
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}

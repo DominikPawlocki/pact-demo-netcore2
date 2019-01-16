@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Pact CONSUMER 1 - ASP.NET Core MVC 2.2";
+    @model NhtsaManufacturersResponce;
+}
+
+<div class="row">
+    <div class="col-md-2">
+
+    </div>
+    <div class="col-md-7">
+        <div class="row col-md-12">
+            <h3 class="col-md-3">
+                @Html.DisplayNameFor(model => model.Message)
+            </h3>
+            <h3 class="col-md-9">
+                @Html.DisplayFor(model => model.Message)
+            </h3>
+        </div>
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Results.Single().Mfr_ID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Results.Single().Mfr_CommonName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Results.Single().Mfr_Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Results.Single().VehicleTypes)
+                </th>
+            </tr>
+
+            @foreach (var item in Model.Results)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Mfr_ID)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Mfr_CommonName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Mfr_Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.VehicleTypes.FirstOrDefault().Name)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="col-md-3">
+        <input type="button" value="Refresh !" onclick="location.href='@Url.Action("Index", "Home")'" />
+    </div>
+</div>

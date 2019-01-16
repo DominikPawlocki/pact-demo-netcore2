@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pact.Provider.Api", "Pact.Provider.Api\Pact.Provider.Api.csproj", "{9893C879-F5AC-47A6-AC1A-AC2B5DCB7936}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pact.Provider.Api.ConsumerTests", "Pact.Provider.Api.ConsumerTests\Pact.Provider.Api.ConsumerTests.csproj", "{44EDFA13-23F8-40A1-9059-62452C7D3309}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9893C879-F5AC-47A6-AC1A-AC2B5DCB7936}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9893C879-F5AC-47A6-AC1A-AC2B5DCB7936}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9893C879-F5AC-47A6-AC1A-AC2B5DCB7936}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9893C879-F5AC-47A6-AC1A-AC2B5DCB7936}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6759A291-4CAF-42DA-86C0-11B1A7F26BAF}
+	EndGlobalSection
+EndGlobal
