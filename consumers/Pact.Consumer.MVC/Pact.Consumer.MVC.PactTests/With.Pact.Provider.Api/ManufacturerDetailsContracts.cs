@@ -91,7 +91,7 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
         {
             string providerResource = "fsoo";
             _mockProviderService
-                .UponReceiving($"A GET request to retrieve /provider/api/cars/manufacturers/{providerResource}/details")
+                .UponReceiving($"A GET request to retrieve provider/api/cars/manufacturers/{providerResource}/details")
                 .With(new ProviderServiceRequest
                 {
                     Method = HttpVerb.Get,

@@ -53,7 +53,7 @@ namespace Pact.Provider.Api.ConsumerTests.Consumer.MVC
                 // the console output, so a custom outputter is required.
                 Outputters = new[] { new XUnitOutput(output) },
                 Verbose = true,
-                ProviderVersion = "6",
+                ProviderVersion = "7",
                 PublishVerificationResults = true
             };
 

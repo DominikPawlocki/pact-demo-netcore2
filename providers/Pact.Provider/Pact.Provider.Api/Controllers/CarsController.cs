@@ -45,7 +45,7 @@ namespace Pact.Provider.Api.Controllers
             var result = await _service.GetManufacturerDetails(manufacturer);
             if (result.Results == null || !result.Results.Any())
             {
-                return Ok();
+                return NotFound();
             }
             return Ok(result);
         }
