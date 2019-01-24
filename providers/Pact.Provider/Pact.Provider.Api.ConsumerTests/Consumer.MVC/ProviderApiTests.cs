@@ -36,7 +36,8 @@ namespace Pact.Provider.Api.ConsumerTests.Consumer.MVC
         public void Given_NotExisting_When_Getting_Manufacturer_Details_Returns_404()
         {
             _pactVerifier
-                .Verify($"A GET request to retrieve provider/api/cars/manufacturers/fsoo/details");
+                // .Verify($"A GET request to retrieve provider/api/cars/manufacturers/fsoo/details");
+                .Verify();
         }
 
         [Fact(DisplayName = "Random manufacturers returns data with random header")]
