@@ -26,9 +26,8 @@ namespace Pact.Consumer.MVC
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
-            //services.AddScoped<ICarService, CarService>();
-            services.AddTransient<ICarService>(s => new CarService("http://localhost:5000/"));
+            
+            services.AddTransient<ICarService>(s => new CarService(Configuration["AppSettings:Pact.Provider.Uri"]));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

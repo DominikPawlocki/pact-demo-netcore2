@@ -27,8 +27,12 @@ namespace Pact.Provider.Api.ConsumerTests
                     () => { /* set some state in db, file or something */}
                 },
                 {
-                    "5UXWX7C5ABA",
+                    "a_new_vin",
                      AddData
+                },
+                {
+                    "5UXWX7C5ABA",
+                     () => { }
                 },
                 {
                     "some_wrong_vin",

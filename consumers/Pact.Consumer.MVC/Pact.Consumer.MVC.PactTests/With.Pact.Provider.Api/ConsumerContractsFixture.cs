@@ -10,7 +10,6 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
     {
         public IPactBuilder PactBuilder { get; private set; }
         public IMockProviderService MockProviderService { get; }
-
         public int MockServerPort { get; private set; }
         public string MockProviderServiceBaseUri => String.Format("http://localhost:{0}/", MockServerPort);
         public string SuccessMessage => "Results returned successfully";
@@ -24,7 +23,7 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
             {
                 SpecificationVersion = "2.0.0",
                 PactDir = @"..\..\pacts",
-                LogDir = @".\pact_logs"
+                LogDir = @"..\..\pact_logs"
             };
 
             PactBuilder = new PactBuilder(pactConfig);

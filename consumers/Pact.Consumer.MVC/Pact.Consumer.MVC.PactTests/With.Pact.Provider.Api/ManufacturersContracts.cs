@@ -34,59 +34,54 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                 {
                     Method = HttpVerb.Get,
                     Path = "/provider/api/cars/manufacturers/random20",
-                    Headers = new Dictionary<string, object> { { "Accept", "application/json" } }
+                    Headers = new Dictionary<string, object> {
+                        { "Accept", "application/json" }
+                    }
                 })
-                .WillRespondWith(new ProviderServiceResponse
-                {
+                .WillRespondWith(new ProviderServiceResponse {
                     Status = (int)HttpStatusCode.OK,
                     Headers = new Dictionary<string, object> {
                         { "Content-Type", "application/json; charset=utf-8" },
-                        { "Korean","Ssanyong in header" }
+                        { "Korean","Ssangyong in header" }
                     },
-                    Body = new NhtsaManufacturersResponce
-                    {
+                    Body = new NhtsaManufacturersResponce {
                         Count = 2,
                         Message = _fixture.SuccessMessage,
                         SearchCriteria = null,
                         Results = new[] {
-                                    new ManufacturerResult {
-                                        Country = "United States (USA)",
-                                            Mfr_CommonName = "Chrysler",
-                                            Mfr_ID = 994,
-                                            Mfr_Name = "FCA US LLC",
-                                            VehicleTypes = new [] {
-                                                new VehicleType {
-                                                    IsPrimary = true,
-                                                        Name = "Multipurpose Passenger Vehicle (MPV)"
-                                                }
-                                            }
-                                    },
-                                    new ManufacturerResult {
-                                        Country = "Japan",
-                                            Mfr_CommonName = "Mazda",
-                                            Mfr_ID = 1041,
-                                            Mfr_Name = "Mazda Motor Corporation",
-                                            VehicleTypes = new [] {
-                                                new VehicleType {
-                                                    IsPrimary = true,
-                                                        Name = "Multipurpose Passenger Vehicle (MPV)"
-                                                }
-                                            }
+                            new ManufacturerResult {
+                                Country = "United States (USA)",
+                                Mfr_CommonName = "Chrysler",
+                                Mfr_ID = 994,
+                                Mfr_Name = "FCA US LLC",
+                                VehicleTypes = new [] {
+                                    new VehicleType {
+                                        IsPrimary = true,
+                                        Name = "Multipurpose Passenger Vehicle (MPV)"
                                     }
                                 }
+                            },
+                            new ManufacturerResult {
+                                Country = "Japan",
+                                Mfr_CommonName = "Mazda",
+                                Mfr_ID = 1041,
+                                Mfr_Name = "Mazda Motor Corporation",
+                                VehicleTypes = new [] {
+                                    new VehicleType {
+                                        IsPrimary = true,
+                                        Name = "Multipurpose Passenger Vehicle (MPV)"
+                                    }
+                                }
+                            }
+                        }
                     }
                 });
 
-            // Act
             var consumer = new CarService(_mockProviderServiceBaseUri);
             var result = await consumer.GetManufacturers();
 
-            // Assert
-            Assert.DoesNotContain("No interaction found", result.Message);
-            Assert.NotNull(result.Results);
-            Assert.Equal(2, result.Results.Count());
+            Assert !
             _mockProviderService.VerifyInteractions();
         }
-
     }
 }

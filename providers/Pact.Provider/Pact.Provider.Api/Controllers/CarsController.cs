@@ -17,19 +17,7 @@ namespace Pact.Provider.Api.Controllers
 
         public CarsController(INhtsaService service)
         {
-            this._service = service;
-        }
-
-        [HttpGet("vin/{vin}")]
-        public async Task<ActionResult<NhtsaVINdecoderResponce>> DecodeVin(string vin)
-        {
-            var result = await _service.DecodeVin(vin);
-            if (result.Results != null ||
-               !string.IsNullOrWhiteSpace(result.Results.FirstOrDefault().ErrorCode))
-            {
-                result.Count = 1;
-            }
-            return Ok(result);
+            _service = service;
         }
 
         [HttpGet("manufacturers/first")]
@@ -63,6 +51,30 @@ namespace Pact.Provider.Api.Controllers
         {
             var result = await _service.GetModels(manufacturer, year);
             return Ok(result);
+        }
+
+        [HttpGet("vin/{vin}")]
+        public async Task<ActionResult<NhtsaVINdecoderResponce>> DecodeVin(string vin)
+        {
+            var result = await _service.DecodeVin(vin);
+            if (result.Results != null ||
+               !string.IsNullOrWhiteSpace(result.Results.FirstOrDefault().ErrorCode))
+            {
+                result.Count = 1;
+            }
+            return Ok(result);
+        }
+
+        [HttpPost("vin")]
+        public ActionResult<NhtsaVINResponce> UpsertVin(NhtsaVINRequest car)
+        {
+            Request.HttpContext.Response.Headers.Add("Location", "Ssanyong in header");
+            return Created("/provider/api/cars", new NhtsaVINResponce
+            {
+                Id = 15421,
+                Vin = car.Vin,
+                Message = "Car added/modified correctly."
+            });
         }
     }
 }

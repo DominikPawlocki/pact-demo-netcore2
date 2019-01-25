@@ -1,9 +1,7 @@
-﻿using Newtonsoft.Json;
-using Pact.Provider.Api.Models;
-using System;
+﻿using System;
 using System.Net.Http;
 
-namespace Pact.Provider.Api
+namespace Pact.Provider.Api.Services
 {
     public interface INhtsaHttpClient
     {

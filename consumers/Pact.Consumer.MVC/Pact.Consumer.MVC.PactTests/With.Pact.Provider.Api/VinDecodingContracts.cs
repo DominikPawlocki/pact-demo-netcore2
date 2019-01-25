@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Pact.Consumer.MVC.Models;
@@ -25,7 +24,7 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
             _mockProviderService.ClearInteractions();
         }
 
-        [Fact]
+        [Fact(DisplayName = "Decoding '5UXWX7C5ABA' VIN's returns data")]
         public async Task Given_5UXWX7C5ABA_VIN_When_DecodeVIN_Then_Returns_Data()
         {
             string providerResource = "5UXWX7C5ABA";
@@ -36,14 +35,17 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                 {
                     Method = HttpVerb.Get,
                     Path = $"/provider/api/cars/vin/{providerResource}",
-                    Headers = new Dictionary<string, object> { { "Accept", "application/json" } }
+                    Headers = new Dictionary<string, object> {
+                        { "Accept", "application/json" }
+                    }
                 })
                 .WillRespondWith(new ProviderServiceResponse
                 {
                     Status = (int)HttpStatusCode.OK,
-                    Headers = new Dictionary<string, object> { { "Content-Type", "application/json; charset=utf-8" } },
-                    Body = new NhtsaVINdecoderResponce
-                    {
+                    Headers = new Dictionary<string, object> {
+                        { "Content-Type", "application/json; charset=utf-8" }
+                    },
+                    Body = new NhtsaVINdecoderResponce {
                         Count = 1,
                         Message = _fixture.SuccessMessage,
                         SearchCriteria = $"VIN(s): {providerResource}",
@@ -63,22 +65,18 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                                 PlantCountry = "Germany",
                                 PlantState = "",
                                 VehicleType = "MULTIPURPOSE PASSENGER VEHICLE (MPV)"
-                                }
                             }
+                        }
                     }
                 });
 
             var consumer = new CarService(_mockProviderServiceBaseUri);
             var result = await consumer.DecodeVin(providerResource);
 
-            // Assert
-            Assert.DoesNotContain("No interaction found", result.Message);
-            Assert.NotNull(result.Results);
-            Assert.Single(result.Results);
             _mockProviderService.VerifyInteractions();
         }
 
-        [Fact]
+        [Fact(DisplayName = "Decoding 'some_wrong VIN' returns data")]
         public async Task Given_Wrong_VIN_When_DecodeVIN_Then_Returns_EmptyData()
         {
             string providerResource = "some_wrong_vin";
@@ -89,14 +87,16 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                 {
                     Method = HttpVerb.Get,
                     Path = $"/provider/api/cars/vin/{providerResource}",
-                    Headers = new Dictionary<string, object> { { "Accept", "application/json" } }
+                    Headers = new Dictionary<string, object> {
+                        { "Accept", "application/json" }
+                    }
                 })
-                .WillRespondWith(new ProviderServiceResponse
-                {
+                .WillRespondWith(new ProviderServiceResponse {
                     Status = (int)HttpStatusCode.OK,
-                    Headers = new Dictionary<string, object> { { "Content-Type", "application/json; charset=utf-8" } },
-                    Body = new NhtsaVINdecoderResponce
-                    {
+                    Headers = new Dictionary<string, object> {
+                        { "Content-Type", "application/json; charset=utf-8" }
+                    },
+                    Body = new NhtsaVINdecoderResponce {
                         Count = 1,
                         Message = _fixture.SuccessMessage,
                         SearchCriteria = $"VIN(s): {providerResource}",
@@ -123,10 +123,71 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
 
             var consumer = new CarService(_mockProviderServiceBaseUri);
             var result = await consumer.DecodeVin(providerResource);
+            Assert !
 
-            // Assert
-            Assert.DoesNotContain("No interaction found", result.Message);
-            Assert.Single(result.Results);
+            _mockProviderService.VerifyInteractions();
+        }
+
+        [Fact(DisplayName = "Adding a new car VIN to database returns 201 and Id")]
+        public async Task Given_New_VIN_When_Posting_it_Then_Returns_Created()
+        {
+            string providerResource = "a_new_vin";
+            _mockProviderService
+                .Given($"{providerResource}")
+                .UponReceiving("A POST request to provider/api/cars/vin")
+                .With(new ProviderServiceRequest
+                {
+                    Method = HttpVerb.Post,
+                    Path = "/provider/api/cars/vin",
+                    Headers = new Dictionary<string, object> {
+                        { "Content-Type", "application/json; charset=utf-8" }
+                    },
+                    Body = new {
+                        Vin = providerResource,
+                        Message = "Add new VIN into database",
+                        CarDetail = new {
+                            AdditionalErrorText = "",
+                            EngineCylinders = "4",
+                            ErrorCode = "",
+                            FuelTypePrimary = "Oil",
+                            FuelTypeSecondary = "",
+                            EngineKW = 344.3,
+                            Make = "Audi",
+                            Manufacturer = "Audi",
+                            Model = "A7",
+                            ModelYear = 2018,
+                            PlantCountry = "Germany",
+                            PlantState = "",
+                            PlantCity = "Ingolstadt",
+                            VehicleType = ""
+                        }
+                    }
+                })
+                .WillRespondWith(new ProviderServiceResponse
+                {
+                    Status = (int)HttpStatusCode.Created,
+                    Headers = new Dictionary<string, object> {
+                        { "Content-Type", "application/json; charset=utf-8" },
+                        { "Location", "/provider/api/cars" },
+                    },
+                    Body = new
+                    {
+                        Id = 15421,
+                        Vin = providerResource,
+                        Message = "Car added/modified correctly."
+                    }
+                });
+
+            var consumer = new CarService(_mockProviderServiceBaseUri);
+            var response = await consumer.UpsertVin(providerResource);
+
+            // This is not neccessary. 
+            // Just faster path notification when request doesnt match expected one and then no interaction is found on PACT server
+            /*  var result = JsonConvert.DeserializeObject<PactServerErrorResponse>
+                 (await response.Content.ReadAsStringAsync ());
+
+             Assert.Null (result);
+             Assert.DoesNotContain ("No interaction found", result.Message);*/
             _mockProviderService.VerifyInteractions();
         }
     }

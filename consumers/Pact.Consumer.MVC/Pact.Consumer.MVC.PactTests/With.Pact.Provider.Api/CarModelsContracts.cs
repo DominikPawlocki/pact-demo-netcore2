@@ -1,9 +1,6 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Pact.Consumer.MVC.Models;
 using Pact.Consumer.MVC.Services;
 using PactNet.Mocks.MockHttpService;
@@ -39,48 +36,49 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                 {
                     Method = HttpVerb.Get,
                     Path = $"/provider/api/cars/manufacturers/{manufacturer}/models/{year}",
-                    Headers = new Dictionary<string, object> { { "Accept", "application/json" } }
+                    Headers = new Dictionary<string, object> {
+                        { "Accept", "application/json" },
+                        { "Korean","Ssangyong in header" }
+                        { "Authorization", $"Bearer {testAuthToken}" }
+                    },
                 })
                 .WillRespondWith(new ProviderServiceResponse
                 {
                     Status = (int)HttpStatusCode.OK,
-                    Headers = new Dictionary<string, object> { { "Content-Type", "application/json; charset=utf-8" } },
+                    Headers = new Dictionary<string, object> {
+                        { "Content-Type", "application/json; charset=utf-8" }
+                    },
                     Body = new NhtsaCarModelResponce
                     {
                         Count = 3,
                         Message = _fixture.SuccessMessage,
                         SearchCriteria = $"Make:Tesla | ModelYear:2018",
                         Results = new[] {
-                                    new ModelResult {
-                                        Make_ID = 441,
-                                            Make_Name = $"{manufacturer}",
-                                            Model_ID = 1685,
-                                            Model_Name = "Model S"
-                                    },
-                                    new ModelResult {
-                                        Make_ID = 441,
-                                            Make_Name = $"{manufacturer}",
-                                            Model_ID = 10199,
-                                            Model_Name = "Model X"
-                                    },
-                                    new ModelResult {
-                                        Make_ID = 441,
-                                            Make_Name = $"{manufacturer}",
-                                            Model_ID = 17834,
-                                            Model_Name = "Model 3"
-                                    }
-                                }
+                            new ModelResult {
+                                Make_ID = 441,
+                                Make_Name = $"{manufacturer}",
+                                Model_ID = 1685,
+                                Model_Name = "Model S"
+                            },
+                            new ModelResult {
+                                Make_ID = 441,
+                                Make_Name = $"{manufacturer}",
+                                Model_ID = 10199,
+                                Model_Name = "Model X"
+                            },
+                            new ModelResult {
+                                Make_ID = 441,
+                                Make_Name = $"{manufacturer}",
+                                Model_ID = 17834,
+                                Model_Name = "Model 3"
+                            }
+                        }
                     }
                 });
 
-            // Act
             var consumer = new CarService(_mockProviderServiceBaseUri);
             var response = await consumer.GetModels(manufacturer, year);
-            var result = JsonConvert.DeserializeObject<NhtsaCarModelResponce>
-                (await response.Content.ReadAsStringAsync());
 
-            Assert.DoesNotContain("No interaction found", result.Message);
-            Assert.Equal(3, result.Results.Count());
             _mockProviderService.VerifyInteractions();
         }
     }

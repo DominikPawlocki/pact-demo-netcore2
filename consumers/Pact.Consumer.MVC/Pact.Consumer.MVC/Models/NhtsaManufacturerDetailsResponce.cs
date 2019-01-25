@@ -1,15 +1,18 @@
 using System;
 
-namespace Pact.Consumer.MVC.Models {
+namespace Pact.Consumer.MVC.Models
+{
     //https://vpic.nhtsa.dot.gov/api/vehicles/getmanufacturerdetails/honda?format=json
-    public class NhtsaManufacturerDetailsResponce {
+    public class NhtsaManufacturerDetailsResponce
+    {
         public int Count { get; set; }
         public string Message { get; set; }
         public object SearchCriteria { get; set; }
         public ManufacturerDetailsResult[] Results { get; set; }
     }
 
-    public class ManufacturerDetailsResult {
+    public class ManufacturerDetailsResult
+    {
         public string Address { get; set; }
         public string City { get; set; }
         public string ContactEmail { get; set; }

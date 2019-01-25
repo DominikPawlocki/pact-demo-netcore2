@@ -4,11 +4,11 @@
 }
 
 <div class="row">
-    <div class="col-md-2">
+    <div class="col-md-1">
 
     </div>
-    <div class="col-md-7">
-        <div class="row col-md-12">
+    <div class="col-md-11">
+        <div class="row">
             <h3 class="col-md-3">
                 @Html.DisplayNameFor(model => model.Message)
             </h3>
@@ -51,7 +51,12 @@
             }
         </table>
     </div>
-    <div class="col-md-3">
+</div>
+<div class="row">
+    <div class="col-md-1">
+
+    </div>
+    <div class="col-md-11">
         <input type="button" value="Refresh !" onclick="location.href='@Url.Action("Index", "Home")'" />
     </div>
 </div>

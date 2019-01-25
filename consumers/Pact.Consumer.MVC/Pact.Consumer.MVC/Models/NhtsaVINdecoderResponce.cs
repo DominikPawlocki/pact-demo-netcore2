@@ -1,14 +1,14 @@
-namespace Pact.Consumer.MVC.Models {
-    // https://vpic.nhtsa.dot.gov/api/vehicles/decodevinvalues/5UXWX7C5*BA?format=json&modelyear=2011
-    // 1HGCM82633A004352
-    // 19UYA42601A019296
-    public class NhtsaVINdecoderResponce {
+namespace Pact.Consumer.MVC.Models
+{
+    public class NhtsaVINdecoderResponce
+    {
         public int Count { get; set; }
         public string Message { get; set; }
         public object SearchCriteria { get; set; }
         public CarDetails[] Results { get; set; }
     }
-    public class CarDetails {
+    public class CarDetails
+    {
         public string AdditionalErrorText { get; set; }
         public string ErrorCode { get; set; }
         public string EngineCylinders { get; set; }
@@ -25,4 +25,10 @@ namespace Pact.Consumer.MVC.Models {
         public string VehicleType { get; set; }
     }
 
+    public class NhtsaVINRequest
+    {
+        public string Vin { get; set; }
+        public string Message { get; set; }
+        public CarDetails CarDetail { get; set; }
+    }
 }

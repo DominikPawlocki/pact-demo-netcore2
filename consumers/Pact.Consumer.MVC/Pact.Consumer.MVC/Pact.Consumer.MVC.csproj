@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+	<ProjectUISubcaption>&gt;=.NETCore 2.2</ProjectUISubcaption>
   </PropertyGroup>
 
   <ItemGroup>

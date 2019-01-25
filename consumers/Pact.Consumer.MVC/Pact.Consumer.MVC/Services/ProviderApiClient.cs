@@ -7,17 +7,18 @@ namespace Pact.Consumer.MVC.Services
     {
         private static readonly HttpClient _client = new HttpClient();
 
-        public static HttpClient Get()
+        public static HttpClient WithDefaultHeader()
         {
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             return _client;
         }
 
-        public static HttpClient Post()
+        public static HttpClient WithCustomHeader()
         {
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            _client.DefaultRequestHeaders.Add("Korean", "Ssangyong in header");
             return _client;
         }
     }

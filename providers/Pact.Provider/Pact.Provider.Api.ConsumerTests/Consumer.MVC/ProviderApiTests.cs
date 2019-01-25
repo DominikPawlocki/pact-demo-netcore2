@@ -18,7 +18,25 @@ namespace Pact.Provider.Api.ConsumerTests.Consumer.MVC
             _pactVerifier = _fixture.SetPactVerifier(output);
         }
 
-        [Fact(DisplayName = "Models of 'tesla' returns data")]
+        [Fact(DisplayName = "Test if I return what Customer.MVC wants ..")]
+        public void Given_Pact_From_Broker_Check_Customer_MVC_Consumer_Needs()
+        {
+            _pactVerifier
+                .ProviderState($"{_fixture.PactVerifierUri}/provider-states")
+                .Verify();
+        }
+
+    }
+}
+
+
+
+
+
+
+
+
+        /*[Fact(DisplayName = "Models of 'tesla' returns data")]
         public void Given_Tesla_When_Getting_Manufacturer_Models_Returns_Data()
         {
             _pactVerifier
@@ -36,8 +54,7 @@ namespace Pact.Provider.Api.ConsumerTests.Consumer.MVC
         public void Given_NotExisting_When_Getting_Manufacturer_Details_Returns_404()
         {
             _pactVerifier
-                // .Verify($"A GET request to retrieve provider/api/cars/manufacturers/fsoo/details");
-                .Verify();
+                .Verify($"A GET request to retrieve provider/api/cars/manufacturers/fsoo/details");
         }
 
         [Fact(DisplayName = "Random manufacturers returns data with random header")]
@@ -62,5 +79,11 @@ namespace Pact.Provider.Api.ConsumerTests.Consumer.MVC
                 .ProviderState($"{_fixture.PactVerifierStatesUri}/provider-states")
                 .Verify("A GET request to provider/api/cars/vin/some_wrong_vin", "some_wrong_vin");
         }
-    }
-}
+
+        [Fact(DisplayName = "Creating new car with 'a_new_vin' returns data")]
+        public void Given_A_new_vin_When_Upserting_Car_Then_Returns_Data()
+        {
+            _pactVerifier
+                .ProviderState($"{_fixture.PactVerifierStatesUri}/provider-states")
+                .Verify("A POST request to provider/api/cars/vin", "some_wrong_vin");
+        }*/

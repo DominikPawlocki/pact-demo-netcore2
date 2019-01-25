@@ -29,4 +29,17 @@ namespace Pact.Provider.Api.Models
         public string VehicleType { get; set; }
     }
 
+    public class NhtsaVINRequest
+    {
+        public string Vin { get; set; }
+        public string Message { get; set; }
+        public CarDetails CarDetail { get; set; }
+    }
+
+    public class NhtsaVINResponce
+    {
+        public int Id { get; set; }
+        public string Vin { get; set; }
+        public string Message { get; set; }
+    }
 }

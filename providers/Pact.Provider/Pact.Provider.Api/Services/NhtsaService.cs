@@ -21,10 +21,32 @@ namespace Pact.Provider.Api.Services
     public class NhtsaService : INhtsaService
     {
         private readonly HttpClient _client;
+
         public NhtsaService(INhtsaHttpClient nhtsaHttpClient)
         {
             _client = nhtsaHttpClient.Client;
         }
+               
+        public async Task<NhtsaManufacturersResponce> GetFirst100Manufacturers()
+        {
+            return await GetData<NhtsaManufacturersResponce>($"getallmanufacturers?format=json");
+        }
+
+        public async Task<NhtsaVINdecoderResponce> DecodeVin(string vin)
+        {
+            return await GetData<NhtsaVINdecoderResponce>($"decodevinvalues/{vin}?format=json");
+        }
+
+        public async Task<NhtsaCarModelResponce> GetModels(string manufacturer, int year)
+        {
+            return await GetData<NhtsaCarModelResponce>($"getmodelsformakeyear/make/{manufacturer}/modelyear/{year}?format=json");
+        }
+
+        public async Task<NhtsaManufacturerDetailsResponce> GetManufacturerDetails(string manufacturer)
+        {
+            return await GetData<NhtsaManufacturerDetailsResponce>($"getmanufacturerdetails/{manufacturer}?format=json");
+        }
+
         public async Task<NhtsaManufacturersResponce> GetRandom20Manufacturers()
         {
             var result = await GetData<NhtsaManufacturersResponce>($"getallmanufacturers?format=json");
@@ -47,26 +69,6 @@ namespace Pact.Provider.Api.Services
             result.Results = random20.ToList().ToArray();
 
             return result;
-        }
-
-        public async Task<NhtsaManufacturersResponce> GetFirst100Manufacturers()
-        {
-            return await GetData<NhtsaManufacturersResponce>($"getallmanufacturers?format=json");
-        }
-
-        public async Task<NhtsaVINdecoderResponce> DecodeVin(string vin)
-        {
-            return await GetData<NhtsaVINdecoderResponce>($"decodevinvalues/{vin}?format=json");
-        }
-
-        public async Task<NhtsaCarModelResponce> GetModels(string manufacturer, int year)
-        {
-            return await GetData<NhtsaCarModelResponce>($"getmodelsformakeyear/make/{manufacturer}/modelyear/{year}?format=json");
-        }
-
-        public async Task<NhtsaManufacturerDetailsResponce> GetManufacturerDetails(string manufacturer)
-        {
-            return await GetData<NhtsaManufacturerDetailsResponce>($"getmanufacturerdetails/{manufacturer}?format=json");
         }
 
         private int[] Generate20Randoms(int max)
@@ -95,7 +97,6 @@ namespace Pact.Provider.Api.Services
 
             try
             {
-                //var response = await _client.GetAsync(_uri + string.Join("", endpoint.Split(default(string[]), StringSplitOptions.RemoveEmptyEntries)));
                 var response = await _client.GetAsync(endpoint);
                 result = JsonConvert.DeserializeObject<T>(await response.Content.ReadAsStringAsync());
             }

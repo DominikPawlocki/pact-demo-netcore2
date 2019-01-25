@@ -5,44 +5,40 @@ using PactNet;
 using Xunit.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 using Pact.Provider.Api.ConsumerTests.xUnit;
+using Pact.Provider.Api.Services;
 
 namespace Pact.Provider.Api.ConsumerTests.Consumer.MVC
 {
     public class ConsumerMVCPactFixture : IDisposable
     {
+        private readonly IWebHost _providerWebHost;
+        private readonly IWebHost _pactVerifierWebHost;
+
         public const string Name = "Consumer MVC pacts";
         public string ProviderUri => "http://localhost:5000";
-        public string PactVerifierStatesUri => "http://localhost:5001";
+        public string PactVerifierUri => "http://localhost:5001";
         public string PactBrokerUri => "http://23.97.153.18";
-        private readonly IWebHost _providerWebHost;
-        private readonly IWebHost _pactProviderStatesWebHost;
         public IPactVerifier PactVerifier { get; private set; }
 
         public ConsumerMVCPactFixture()
         {
             _providerWebHost = WebHost.CreateDefaultBuilder()
-                .Configure(configureApp =>
-                {
-                    // adding a middleware to handle service provider state setting calls ("given")
-                    // configureApp.UseMiddleware<ProviderStateMiddleware>();
-                })
                 .UseUrls(ProviderUri)
-                // .UseContentRoot(aaa)
                 .UseStartup<TestStartup>()
                 .ConfigureServices(services =>
                 {
-                    // !! adding missing service with mocked responses
+                    // !! adding mocked responses
                     services.AddSingleton<INhtsaHttpClient, HttpClientMock>();
                 })
                 .UseIISIntegration()
                 .Build();
             _providerWebHost.RunAsync();
 
-            _pactProviderStatesWebHost = WebHost.CreateDefaultBuilder()
-                .UseUrls(PactVerifierStatesUri)
+            _pactVerifierWebHost = WebHost.CreateDefaultBuilder()
+                .UseUrls(PactVerifierUri)
                 .UseStartup<PactStateStartup>()
                 .Build();
-            _pactProviderStatesWebHost.Start();
+            _pactVerifierWebHost.Start();
         }
 
         internal IPactVerifier SetPactVerifier(ITestOutputHelper output)
@@ -53,7 +49,7 @@ namespace Pact.Provider.Api.ConsumerTests.Consumer.MVC
                 // the console output, so a custom outputter is required.
                 Outputters = new[] { new XUnitOutput(output) },
                 Verbose = true,
-                ProviderVersion = "7",
+                ProviderVersion = "8",
                 PublishVerificationResults = true
             };
 
@@ -78,8 +74,8 @@ namespace Pact.Provider.Api.ConsumerTests.Consumer.MVC
                 {
                     _providerWebHost.StopAsync().GetAwaiter().GetResult();
                     _providerWebHost.Dispose();
-                    _pactProviderStatesWebHost.StopAsync().GetAwaiter().GetResult();
-                    _pactProviderStatesWebHost.Dispose();
+                    _pactVerifierWebHost.StopAsync().GetAwaiter().GetResult();
+                    _pactVerifierWebHost.Dispose();
                 }
                 disposedValue = true;
             }

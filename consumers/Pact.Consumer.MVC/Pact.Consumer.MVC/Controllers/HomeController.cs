@@ -20,12 +20,6 @@ namespace Pact.Consumer.MVC.Controllers
             return View(result);
         }
 
-        [Route("/cars/manufacturers")]
-        public async Task<NhtsaManufacturersResponce> CarManufacturers()
-        {
-            return await carService.GetManufacturers();
-        }
-
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
