@@ -18,7 +18,7 @@ namespace Pact.Consumer.MVC.Services
         {
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            _client.DefaultRequestHeaders.Add("Korean", "Ssangyong in header");
+            _client.DefaultRequestHeaders.Add("Authorization", "Bearer Ssangyong");
             return _client;
         }
     }

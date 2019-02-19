@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Pact.Provider.Api/bin/Debug/netcoreapp2.1/Pact.Provider.Api.dll",
+            "program": "${workspaceFolder}/Pact.Provider.Api/bin/Debug/netcoreapp2.2/Pact.Provider.Api.dll",
             "args": [],
             "cwd": "${workspaceFolder}/Pact.Provider.Api",
             "stopAtEntry": false,

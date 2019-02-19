@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Pact.Consumer.MVC.Models;
 using Pact.Consumer.MVC.Services;
 using PactNet.Mocks.MockHttpService;

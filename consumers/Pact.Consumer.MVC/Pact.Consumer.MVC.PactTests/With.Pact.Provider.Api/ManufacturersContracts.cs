@@ -38,13 +38,15 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                         { "Accept", "application/json" }
                     }
                 })
-                .WillRespondWith(new ProviderServiceResponse {
+                .WillRespondWith(new ProviderServiceResponse
+                {
                     Status = (int)HttpStatusCode.OK,
                     Headers = new Dictionary<string, object> {
                         { "Content-Type", "application/json; charset=utf-8" },
-                        { "Korean","Ssangyong in header" }
+                        { "Authorization", "Bearer Ssangyong" }
                     },
-                    Body = new NhtsaManufacturersResponce {
+                    Body = new NhtsaManufacturersResponce
+                    {
                         Count = 2,
                         Message = _fixture.SuccessMessage,
                         SearchCriteria = null,
@@ -80,7 +82,8 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
             var consumer = new CarService(_mockProviderServiceBaseUri);
             var result = await consumer.GetManufacturers();
 
-            Assert !
+            Assert.Equal(_fixture.SuccessMessage, result.Message);
+
             _mockProviderService.VerifyInteractions();
         }
     }

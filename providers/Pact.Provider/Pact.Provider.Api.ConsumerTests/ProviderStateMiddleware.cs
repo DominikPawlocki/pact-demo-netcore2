@@ -23,16 +23,12 @@ namespace Pact.Provider.Api.ConsumerTests
             {
                 // lack of handling provider state given in pact file goes to pact verification error also !
                 {
-                    "some state",
-                    () => { /* set some state in db, file or something */}
-                },
-                {
                     "a_new_vin",
                      AddData
                 },
                 {
                     "5UXWX7C5ABA",
-                     () => { }
+                     () => { /* set some state in db, file or something */}
                 },
                 {
                     "some_wrong_vin",

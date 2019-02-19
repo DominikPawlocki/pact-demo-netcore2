@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using Pact.Consumer.MVC.Models;
 using Pact.Consumer.MVC.Services;
 using PactNet.Mocks.MockHttpService;
@@ -38,8 +39,7 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                     Path = $"/provider/api/cars/manufacturers/{manufacturer}/models/{year}",
                     Headers = new Dictionary<string, object> {
                         { "Accept", "application/json" },
-                        { "Korean","Ssangyong in header" }
-                        { "Authorization", $"Bearer {testAuthToken}" }
+                        { "Authorization", "Bearer Ssangyong" }
                     },
                 })
                 .WillRespondWith(new ProviderServiceResponse

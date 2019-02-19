@@ -42,7 +42,7 @@ namespace Pact.Provider.Api.Controllers
         public async Task<ActionResult<NhtsaManufacturersResponce>> GetRandom20()
         {
             var result = await _service.GetRandom20Manufacturers();
-            Request.HttpContext.Response.Headers.Add("Korean", "Ssanyong in header");
+            Request.HttpContext.Response.Headers.Add("Authorization", "Bearer Ssangyong");
             return Ok(result);
         }
 

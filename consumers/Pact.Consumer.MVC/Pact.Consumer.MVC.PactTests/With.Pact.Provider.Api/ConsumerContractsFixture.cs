@@ -43,7 +43,6 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
             return port;
         }
 
-        #region IDisposable Support
         private bool disposedValue = false; // To detect redundant calls
 
         protected virtual void Dispose(bool disposing)
@@ -64,6 +63,5 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
         {
             Dispose(true);
         }
-        #endregion
     }
 }

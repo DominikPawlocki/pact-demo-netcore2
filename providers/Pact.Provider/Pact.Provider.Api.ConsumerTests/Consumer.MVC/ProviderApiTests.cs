@@ -18,7 +18,7 @@ namespace Pact.Provider.Api.ConsumerTests.Consumer.MVC
             _pactVerifier = _fixture.SetPactVerifier(output);
         }
 
-        [Fact(DisplayName = "Test if I return what Customer.MVC wants ..")]
+        [Fact(DisplayName = "Test if I return what Customer-MVC wants")]
         public void Given_Pact_From_Broker_Check_Customer_MVC_Consumer_Needs()
         {
             _pactVerifier
