@@ -68,7 +68,6 @@ namespace Pact.Provider.Api.Controllers
         [HttpPost("vin")]
         public ActionResult<NhtsaVINResponce> UpsertVin(NhtsaVINRequest car)
         {
-            Request.HttpContext.Response.Headers.Add("Location", "Ssanyong in header");
             return Created("/provider/api/cars", new NhtsaVINResponce
             {
                 Id = 15421,
