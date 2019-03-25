@@ -17,7 +17,7 @@ namespace Pact.Provider.Api.ConsumerTests.Consumer.MVC
         public const string Name = "Consumer MVC pacts";
         public string ProviderUri => "http://localhost:5000";
         public string PactVerifierUri => "http://localhost:5001";
-        public string PactBrokerUri => "http://23.97.153.18";
+        public string PactBrokerUri => "http://13.80.68.171";
         public IPactVerifier PactVerifier { get; private set; }
 
         public ConsumerMVCPactFixture()
