@@ -20,7 +20,7 @@ else {
 	$tag = $branch.Replace("/", "-");
 }
 
-$baseUrl = "http://13.80.68.171"
+$baseUrl = "http://52.157.178.169"
 $pacts = Get-ChildItem -Path ".\*\pacts\*.json"
 foreach($pact in $pacts) {
 	$pactContent = (Get-Content $pact) -join "`r`n";
