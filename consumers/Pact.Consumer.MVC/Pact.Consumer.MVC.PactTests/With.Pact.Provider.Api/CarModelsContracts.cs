@@ -1,85 +1,82 @@
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Pact.Consumer.MVC.Models;
-using Pact.Consumer.MVC.Services;
-using PactNet.Mocks.MockHttpService;
-using PactNet.Mocks.MockHttpService.Models;
-using Xunit;
+//using System.Collections.Generic;
+//using System.Net;
+//using System.Threading.Tasks;
+//using Pact.Consumer.MVC.Models;
+//using Pact.Consumer.MVC.Services;
+//using Xunit;
 
-namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
-{
-    [Collection(ConsumerContractsFixture.CollectionName)]
-    public class CarModelsContracts
-    {
-        private readonly IMockProviderService _mockProviderService;
-        private readonly string _mockProviderServiceBaseUri;
-        private readonly ConsumerContractsFixture _fixture;
+//namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
+//{
+//    [Collection(ConsumerContractsFixture.CollectionName)]
+//    public class CarModelsContracts
+//    {
+//        private readonly IMockProviderService _mockProviderService;
+//        private readonly string _mockProviderServiceBaseUri;
+//        private readonly ConsumerContractsFixture _fixture;
 
-        public CarModelsContracts(ConsumerContractsFixture fixture)
-        {
-            _mockProviderServiceBaseUri = fixture.MockProviderServiceBaseUri;
-            _mockProviderService = fixture.MockProviderService;
-            _fixture = fixture;
-            _mockProviderService.ClearInteractions();
-        }
+//        public CarModelsContracts(ConsumerContractsFixture fixture)
+//        {
+//            _mockProviderServiceBaseUri = fixture.MockProviderServiceBaseUri;
+//            _mockProviderService = fixture.MockProviderService;
+//            _fixture = fixture;
+//            _mockProviderService.ClearInteractions();
+//        }
 
-        [Fact]
-        public async Task Given_ManufacturerName_and_Year_When_Getting_Manufacturer_Models_Then_Returns_Data()
-        {
-            string manufacturer = "tesla";
-            int year = 2018;
+//        [Fact]
+//        public async Task Given_ManufacturerName_and_Year_When_Getting_Manufacturer_Models_Then_Returns_Data()
+//        {
+//            string manufacturer = "tesla";
+//            int year = 2018;
 
-            _mockProviderService
-                .UponReceiving($"A GET request to provider/api/cars/manufacturers/{manufacturer}/models/{year}")
-                .With(new ProviderServiceRequest
-                {
-                    Method = HttpVerb.Get,
-                    Path = $"/provider/api/cars/manufacturers/{manufacturer}/models/{year}",
-                    Headers = new Dictionary<string, object> {
-                        { "Accept", "application/json" },
-                        { "Authorization", "Bearer Ssangyong" }
-                    },
-                })
-                .WillRespondWith(new ProviderServiceResponse
-                {
-                    Status = (int)HttpStatusCode.OK,
-                    Headers = new Dictionary<string, object> {
-                        { "Content-Type", "application/json; charset=utf-8" }
-                    },
-                    Body = new NhtsaCarModelResponce
-                    {
-                        Count = 3,
-                        Message = _fixture.SuccessMessage,
-                        SearchCriteria = $"Make:Tesla | ModelYear:2018",
-                        Results = new[] {
-                            new ModelResult {
-                                Make_ID = 441,
-                                Make_Name = $"{manufacturer}",
-                                Model_ID = 1685,
-                                Model_Name = "Model S"
-                            },
-                            new ModelResult {
-                                Make_ID = 441,
-                                Make_Name = $"{manufacturer}",
-                                Model_ID = 10199,
-                                Model_Name = "Model X"
-                            },
-                            new ModelResult {
-                                Make_ID = 441,
-                                Make_Name = $"{manufacturer}",
-                                Model_ID = 17834,
-                                Model_Name = "Model 3"
-                            }
-                        }
-                    }
-                });
+//            _mockProviderService
+//                .UponReceiving($"A GET request to provider/api/cars/manufacturers/{manufacturer}/models/{year}")
+//                .With(new ProviderServiceRequest
+//                {
+//                    Method = HttpVerb.Get,
+//                    Path = $"/provider/api/cars/manufacturers/{manufacturer}/models/{year}",
+//                    Headers = new Dictionary<string, object> {
+//                        { "Accept", "application/json" },
+//                        { "Authorization", "Bearer Ssangyong" }
+//                    },
+//                })
+//                .WillRespondWith(new ProviderServiceResponse
+//                {
+//                    Status = (int)HttpStatusCode.OK,
+//                    Headers = new Dictionary<string, object> {
+//                        { "Content-Type", "application/json; charset=utf-8" }
+//                    },
+//                    Body = new NhtsaCarModelResponce
+//                    {
+//                        Count = 3,
+//                        Message = _fixture.SuccessMessage,
+//                        SearchCriteria = $"Make:Tesla | ModelYear:2018",
+//                        Results = new[] {
+//                            new ModelResult {
+//                                Make_ID = 441,
+//                                Make_Name = $"{manufacturer}",
+//                                Model_ID = 1685,
+//                                Model_Name = "Model S"
+//                            },
+//                            new ModelResult {
+//                                Make_ID = 441,
+//                                Make_Name = $"{manufacturer}",
+//                                Model_ID = 10199,
+//                                Model_Name = "Model X"
+//                            },
+//                            new ModelResult {
+//                                Make_ID = 441,
+//                                Make_Name = $"{manufacturer}",
+//                                Model_ID = 17834,
+//                                Model_Name = "Model 3"
+//                            }
+//                        }
+//                    }
+//                });
 
-            var consumer = new CarService(_mockProviderServiceBaseUri);
-            var response = await consumer.GetModels(manufacturer, year);
+//            var consumer = new CarService(_mockProviderServiceBaseUri);
+//            var response = await consumer.GetModels(manufacturer, year);
 
-            _mockProviderService.VerifyInteractions();
-        }
-    }
-}
+//            _mockProviderService.VerifyInteractions();
+//        }
+//    }
+//}

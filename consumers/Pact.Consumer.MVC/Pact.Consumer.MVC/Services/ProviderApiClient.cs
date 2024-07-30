@@ -1,20 +1,25 @@
-﻿using System.Net.Http;
+﻿using Pact.Provider.Api;
+using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace Pact.Consumer.MVC.Services
 {
-    public static class ProviderApiClient
+    public class ProviderApiClient
     {
-        private static readonly HttpClient _client = new HttpClient();
+        private readonly HttpClient _client;
 
-        public static HttpClient WithDefaultHeader()
+        public ProviderApiClient(IHttpClientFactory factory)
+        {
+             _client = factory.CreateClient(Program.NhtsaPublicApiHttpClientName);
+        }
+        public HttpClient WithDefaultHeader()
         {
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             return _client;
         }
 
-        public static HttpClient WithCustomHeader()
+        public HttpClient WithCustomHeader()
         {
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
