@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Pact.Consumer.MVC;
 
@@ -21,10 +20,6 @@ namespace Pact.Provider.Api
 
             var app = builder.Build();
             app.UseRouting();
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
 
             app.MapControllerRoute(name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");

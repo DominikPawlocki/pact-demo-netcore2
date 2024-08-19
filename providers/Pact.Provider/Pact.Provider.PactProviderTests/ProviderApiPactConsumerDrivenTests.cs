@@ -19,13 +19,11 @@ namespace Pact.Provider.PactProviderTests
             PropertyNameCaseInsensitive = true
         };
 
-
         public ProviderApiPactConsumerDrivenTests(ProviderFixture fixture, ITestOutputHelper output)
         {
             _fixture = fixture;
             _output = output;
         }
-
 
         [Fact]
         public void Verify()

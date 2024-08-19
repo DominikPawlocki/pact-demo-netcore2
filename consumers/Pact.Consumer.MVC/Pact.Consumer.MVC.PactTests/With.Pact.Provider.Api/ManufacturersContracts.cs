@@ -1,18 +1,16 @@
-using System.Net;
-using System.Net.Http;
-using System.Threading.Tasks;
+using FluentAssertions;
 using Moq;
 using Pact.Consumer.MVC.Models;
 using Pact.Consumer.MVC.Services;
+using Pact.Provider.Api;
 using PactNet;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using Match = PactNet.Matchers.Match;
-using System.Net.Http.Headers;
-using Pact.Provider.Api;
-using System.Net.Mime;
-using FluentAssertions;
-using System.Collections.Generic;
 
 namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
 {

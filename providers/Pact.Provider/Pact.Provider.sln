@@ -5,9 +5,7 @@ VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pact.Provider.Api", "Pact.Provider.Api\Pact.Provider.Api.csproj", "{9893C879-F5AC-47A6-AC1A-AC2B5DCB7936}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pact.Provider.Api.ConsumerTests", "Pact.Provider.Api.ConsumerTests\Pact.Provider.Api.ConsumerTests.csproj", "{44EDFA13-23F8-40A1-9059-62452C7D3309}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pact.Provider.PactProviderTests", "Pact.Provider.PactProviderTests\Pact.Provider.PactProviderTests.csproj", "{257303DC-905F-4826-A7E1-4BD24ABA41EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pact.Provider.PactProviderTests", "Pact.Provider.PactProviderTests\Pact.Provider.PactProviderTests.csproj", "{257303DC-905F-4826-A7E1-4BD24ABA41EB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +23,6 @@ Global
 		{9893C879-F5AC-47A6-AC1A-AC2B5DCB7936}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9893C879-F5AC-47A6-AC1A-AC2B5DCB7936}.Release|x64.ActiveCfg = Release|Any CPU
 		{9893C879-F5AC-47A6-AC1A-AC2B5DCB7936}.Release|x64.Build.0 = Release|Any CPU
-		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Debug|x64.Build.0 = Debug|Any CPU
-		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Release|Any CPU.Build.0 = Release|Any CPU
-		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Release|x64.ActiveCfg = Release|Any CPU
-		{44EDFA13-23F8-40A1-9059-62452C7D3309}.Release|x64.Build.0 = Release|Any CPU
 		{257303DC-905F-4826-A7E1-4BD24ABA41EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{257303DC-905F-4826-A7E1-4BD24ABA41EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{257303DC-905F-4826-A7E1-4BD24ABA41EB}.Debug|x64.ActiveCfg = Debug|x64
