@@ -11,6 +11,7 @@ namespace Pact.Provider.PactProviderTests.Setup
 
         public ProviderFixture()
         {
+            //temporary localhost URL of the API (provider) under test will be hosted during a test, with requests from Pact file downloaded
             this.ProviderServerUri = new Uri("https://localhost:5000");
 
             this.server = Host.CreateDefaultBuilder()

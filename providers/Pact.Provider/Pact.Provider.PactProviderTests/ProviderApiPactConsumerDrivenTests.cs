@@ -11,6 +11,7 @@ namespace Pact.Provider.PactProviderTests
     {
         private readonly ProviderFixture _fixture;
         private readonly ITestOutputHelper _output;
+        //URL of Pactbroker, where consumer driven expectations are uploaded by consumers
         public string PactBrokerUri = "http://localhost:9292";
 
         private static readonly JsonSerializerOptions Options = new()
@@ -26,7 +27,7 @@ namespace Pact.Provider.PactProviderTests
         }
 
         [Fact]
-        public void Verify()
+        public void VerifyLatestPact()
         {
             var verifier = new PactVerifier("Pact.Provider.Api", new PactVerifierConfig
             {

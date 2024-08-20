@@ -33,7 +33,7 @@ namespace Pact.Provider.PactProviderTests.Setup
                 SearchCriteria = null as string,
                 Results = new[] {
                     new {
-                    Address = "3500 Deer Creek Roadyyy",
+                    Address = "3500 Deer Creek Road",
                     City = "Palo Alto",
                     ContactEmail = "callen@tesla.com",
                     ContactPhone = "(267)808-8976",
@@ -143,7 +143,7 @@ namespace Pact.Provider.PactProviderTests.Setup
                 SearchCriteria = (string)null,
                 Results = new[] {
                     new {
-                        Country = "United States (USA)yy",
+                        Country = "United States (USA)",
                         Mfr_CommonName = "Chrysler",
                         Mfr_ID = 994,
                         Mfr_Name = "FCA US LLC",

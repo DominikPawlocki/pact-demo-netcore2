@@ -60,7 +60,7 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
 
             _fixture.PactBuilder
                       .UponReceiving($"A GET request to provider/api/cars/vin/{providerResource}")
-                      .Given($"a vehicle with ID {providerResource}", new Dictionary<string, string> { ["id"] = "1" })
+                      .Given($"a vehicle with VIN {providerResource}", new Dictionary<string, string> { ["VIN"] = providerResource })
                       .WithRequest(HttpMethod.Get, $"/provider/api/cars/vin/{providerResource}")
                       .WithHeader("Accept", "application/json")
                   .WillRespond()
@@ -112,7 +112,7 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
 
             _fixture.PactBuilder
                          .UponReceiving($"A GET request to provider/api/cars/vin/{providerResource}")
-                         .Given($"a vehicle with ID {providerResource}", new Dictionary<string, string> { ["id"] = "1" })
+                         .Given($"a vehicle with VIN {providerResource}", new Dictionary<string, string> { ["VIN"] = providerResource })
                          .WithRequest(HttpMethod.Get, $"/provider/api/cars/vin/{providerResource}")
                          .WithHeader("Accept", "application/json")
                      .WillRespond()
@@ -170,12 +170,12 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
 
             _fixture.PactBuilder
                       .UponReceiving($"A POST request to provider/api/cars/vin/")
-                      .Given($"a new vehicle with VIN {providerResource}", new Dictionary<string, string> { ["id"] = "1" })
+                      .Given($"a new vehicle with VIN {providerResource}", new Dictionary<string, string> { ["VIN"] = providerResource })
                       .WithRequest(HttpMethod.Post, $"/provider/api/cars/vin")
                       .WithJsonBody(requestBody)
                       .WithHeader("Accept", "application/json")
                   .WillRespond()
-                      .WithStatus(HttpStatusCode.OK)
+                      .WithStatus(HttpStatusCode.Created)
                       .WithHeader("Content-Type", "application/json; charset=utf-8")
                       .WithHeader("Location", "/provider/api/cars")
                       .WithJsonBody(expectedProviderResponse);
