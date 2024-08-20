@@ -1,9 +1,12 @@
+using Moq;
+using Pact.Provider.Api;
 using PactNet;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Xunit.Abstractions;
 
-namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
+namespace Pact.Consumer.MVC.PactTests
 {
     public class ConsumerContractsFixture
     {
@@ -15,7 +18,7 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
         public const string SuccessMessage = "Results returned successfully";
         public const string CollectionName = "With.Pact.Provider.Api";
 
-        public PactConfig GetOrCreatePactConfig(ITestOutputHelper output)
+        public PactConfig GetOrCreatePactConfig()
         {
             if (PactConf == null)
             {
@@ -32,6 +35,20 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                 };
             }
             return PactConf;
+        }
+
+        internal void SetupHttpClientMock(Mock<IHttpClientFactory> mock, System.Uri someUri)
+        {
+            mock
+                .Setup(f => f.CreateClient(Program.NhtsaPublicApiHttpClientName))
+                .Returns(() => new HttpClient
+                {
+                    BaseAddress = someUri,
+                    DefaultRequestHeaders =
+                    {
+                        Accept = { MediaTypeWithQualityHeaderValue.Parse("application/json") },
+                    }
+                });
         }
     }
 }

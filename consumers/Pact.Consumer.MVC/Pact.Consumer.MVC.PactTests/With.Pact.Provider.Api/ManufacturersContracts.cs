@@ -56,7 +56,7 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
         public ManufacturersContracts(ConsumerContractsFixture fixture, ITestOutputHelper output)
         {
             _fixture = fixture;
-            _fixture.GetOrCreatePactConfig(output);
+            _fixture.GetOrCreatePactConfig();
             _fixture.PactBuilder =
                 PactNet.Pact.V4(ConsumerContractsFixture.ConsumerName, ConsumerContractsFixture.ProviderName, _fixture.PactConf)
                 .WithHttpInteractions();
@@ -70,7 +70,6 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                         .Given("an order with ID {id} exists", new Dictionary<string, string> { ["id"] = "1" })
                         .WithRequest(HttpMethod.Get, "/provider/api/cars/manufacturers/random20")
                         .WithHeader("Accept", "application/json")
-                    //.WithHeader("Authorization", "Bearer Ssangyong")
                     .WillRespond()
                         .WithStatus(HttpStatusCode.OK)
                         .WithJsonBody(_expected);

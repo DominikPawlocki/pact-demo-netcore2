@@ -1,17 +1,14 @@
-using System.Collections.Generic;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
 using Newtonsoft.Json;
 using Pact.Consumer.MVC.Models;
 using Pact.Consumer.MVC.Services;
-using Pact.Provider.Api;
 using PactNet;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
 {
@@ -21,10 +18,10 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
         private readonly ConsumerContractsFixture _fixture;
         Mock<IHttpClientFactory> _mockFactory = new();
 
-        public VinDecodingContracts(ConsumerContractsFixture fixture, ITestOutputHelper output)
+        public VinDecodingContracts(ConsumerContractsFixture fixture)
         {
             _fixture = fixture;
-            _fixture.GetOrCreatePactConfig(output);
+            _fixture.GetOrCreatePactConfig();
             _fixture.PactBuilder =
                 PactNet.Pact.V4(ConsumerContractsFixture.ConsumerName, ConsumerContractsFixture.ProviderName, _fixture.PactConf)
                 .WithHttpInteractions();
@@ -66,7 +63,6 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                       .Given($"a vehicle with ID {providerResource}", new Dictionary<string, string> { ["id"] = "1" })
                       .WithRequest(HttpMethod.Get, $"/provider/api/cars/vin/{providerResource}")
                       .WithHeader("Accept", "application/json")
-                  //.WithHeader("Authorization", "Bearer Ssangyong")
                   .WillRespond()
                       .WithStatus(HttpStatusCode.OK)
                       .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -74,7 +70,7 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
 
             await _fixture.PactBuilder.VerifyAsync(async ctx =>
             {
-                SetupHttpClientMock(ctx.MockServerUri);
+                _fixture.SetupHttpClientMock(_mockFactory, ctx.MockServerUri);
 
                 var consumer = new CarService(_mockFactory.Object);
                 var result = await consumer.DecodeVin(providerResource);
@@ -119,7 +115,6 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                          .Given($"a vehicle with ID {providerResource}", new Dictionary<string, string> { ["id"] = "1" })
                          .WithRequest(HttpMethod.Get, $"/provider/api/cars/vin/{providerResource}")
                          .WithHeader("Accept", "application/json")
-                     //.WithHeader("Authorization", "Bearer Ssangyong")
                      .WillRespond()
                          .WithStatus(HttpStatusCode.OK)
                          .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -127,7 +122,7 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
 
             await _fixture.PactBuilder.VerifyAsync(async ctx =>
             {
-                SetupHttpClientMock(ctx.MockServerUri);
+                _fixture.SetupHttpClientMock(_mockFactory, ctx.MockServerUri);
 
                 var consumer = new CarService(_mockFactory.Object);
                 var result = await consumer.DecodeVin(providerResource);
@@ -179,7 +174,6 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                       .WithRequest(HttpMethod.Post, $"/provider/api/cars/vin")
                       .WithJsonBody(requestBody)
                       .WithHeader("Accept", "application/json")
-                  //.WithHeader("Authorization", "Bearer Ssangyong")
                   .WillRespond()
                       .WithStatus(HttpStatusCode.OK)
                       .WithHeader("Content-Type", "application/json; charset=utf-8")
@@ -189,7 +183,7 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
 
             await _fixture.PactBuilder.VerifyAsync(async ctx =>
             {
-                SetupHttpClientMock(ctx.MockServerUri);
+                _fixture.SetupHttpClientMock(_mockFactory, ctx.MockServerUri);
 
                 var consumer = new CarService(_mockFactory.Object);
                 var response = await consumer.UpsertVin(providerResource);
@@ -199,20 +193,6 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                 result.Message.Should().Be("Car added/modified correctly.");
                 result.Should().BeEquivalentTo(expectedProviderResponse);
             });
-        }
-
-        private void SetupHttpClientMock(System.Uri someUri)
-        {
-            _mockFactory
-                .Setup(f => f.CreateClient(Program.NhtsaPublicApiHttpClientName))
-                .Returns(() => new HttpClient
-                {
-                    BaseAddress = someUri,
-                    DefaultRequestHeaders =
-                    {
-                        Accept = { MediaTypeWithQualityHeaderValue.Parse("application/json") },
-                    }
-                });
         }
     }
 }

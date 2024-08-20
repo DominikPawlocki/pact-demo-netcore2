@@ -1,5 +1,4 @@
-﻿using Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api;
-using Xunit;
+﻿using Xunit;
 
 namespace Pact.Consumer.MVC.PactTests
 {
