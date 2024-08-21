@@ -8,14 +8,14 @@ Time passes, things changes.. I updated this old .Net Core to .Net 8 and _Pact 5
 I have run it on localhost : 
 ![Alt text](/dockerContainers.JPG?raw=true)
 Check if broker is working via browser : 
-![Alt text](/pactFront.JPG?raw=true)
+![Alt text](/pactFront.jpg?raw=true)
 2) **Run Consumer tests in VS**
 After a run a pact json file is created in folder : *...\pact-demo-netcore2\consumers\Pact.Consumer.MVC\Pact.Consumer.MVC.PactTests\bin\pacts*.
 Remember the pact appends to the file (probably cause several concurrent xUnit processes (tests) to be running in parallel), so its worth to delete the file before a new run for new upload.
 ![text:](/consumer.jpg)
 3) **Upload a pact file to Pact broker** 
 The Powershell script from there doesn't work anymore with new broker, so I just upload it manually by Postman... First, just CTRL-C all the content of pact json file from step 2 and do a base64 from it (ie via some online converter), then you can just paste it to the request body, increment 'pacticipantVersionNumber', branch, tags, etc and upload by HTTP Post (adjust authorization if you set it on step 1, I didn't)
-![Upload](/postmanUpload.jpg?raw=true )
+![Upload](/PostmanUpload.JPG?raw=true )
 4) **Run tests on Provider side**
 ![Alt text](/providerNew.jpg?raw=true)
 
