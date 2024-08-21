@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Pact.Consumer.MVC.Models;
 using Pact.Consumer.MVC.Services;
 
 namespace Pact.Consumer.MVC.Controllers

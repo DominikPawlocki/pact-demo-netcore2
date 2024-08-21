@@ -1,11 +1,11 @@
 ﻿@{
     ViewData["Title"] = "Pact CONSUMER 1 - ASP.NET Core MVC 2.2";
     @model NhtsaManufacturersResponce;
+
 }
 
 <div class="row">
     <div class="col-md-1">
-
     </div>
     <div class="col-md-11">
         <div class="row">
@@ -45,7 +45,9 @@
                         @Html.DisplayFor(modelItem => item.Mfr_Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.VehicleTypes.FirstOrDefault().Name)
+                        @if (item.VehicleTypes != null && item.VehicleTypes.Any())
+                            @Html.DisplayFor(modelItem => item.VehicleTypes.FirstOrDefault().Name)
+
                     </td>
                 </tr>
             }
@@ -54,7 +56,6 @@
 </div>
 <div class="row">
     <div class="col-md-1">
-
     </div>
     <div class="col-md-11">
         <input type="button" value="Refresh !" onclick="location.href='@Url.Action("Index", "Home")'" />

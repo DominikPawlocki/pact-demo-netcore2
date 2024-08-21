@@ -1,5 +1,5 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Pact.Provider.Api
 {
@@ -7,11 +7,20 @@ namespace Pact.Provider.Api
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
-        }
 
-        public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+            var builder = WebApplication.CreateBuilder(args);
+            builder.Services.AddControllers();
+
+            var startup = new Startup(builder.Configuration);
+
+            startup.ConfigureServices(builder.Services);
+
+            var app = builder.Build();
+            app.MapControllers();
+            startup.Configure(app, app.Environment);
+
+            app.Run();
+
+        }
     }
 }

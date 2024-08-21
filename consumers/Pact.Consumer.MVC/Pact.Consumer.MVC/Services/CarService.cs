@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Pact.Consumer.MVC.Models;
@@ -21,15 +23,11 @@ namespace Pact.Consumer.MVC.Services
 
     public class CarService : ICarService
     {
-        private readonly string _providerUri;
+        private readonly IHttpClientFactory _factory;
 
-        public CarService(string providerUri)
+        public CarService(IHttpClientFactory factory)
         {
-            if (string.IsNullOrWhiteSpace(providerUri))
-            {
-                providerUri = "http://localhost:5000/";
-            }
-            _providerUri = providerUri;
+            _factory = factory;
         }
 
         public async Task<NhtsaManufacturersResponce> GetManufacturers()
@@ -39,7 +37,7 @@ namespace Pact.Consumer.MVC.Services
             {
                 return await GetData<NhtsaManufacturersResponce>(endpoint);
             }
-            catch
+            catch (Exception ex)
             {
                 return new NhtsaManufacturersResponce
                 {
@@ -66,13 +64,13 @@ namespace Pact.Consumer.MVC.Services
         public async Task<HttpResponseMessage> GetManufacturerDetails(string manufacturer)
         {
             string endpoint = $"/provider/api/cars/manufacturers/{manufacturer}/details";
-            return await ProviderApiClient.WithDefaultHeader().GetAsync(_providerUri + endpoint);
+            return await new ProviderApiClient(_factory).WithDefaultHeader().GetAsync(endpoint);
         }
 
         public async Task<HttpResponseMessage> GetModels(string manufacturer, int year)
         {
             string endpoint = $"/provider/api/cars/manufacturers/{manufacturer}/models/{year}";
-            return await ProviderApiClient.WithCustomHeader().GetAsync(_providerUri + endpoint);
+            return await new ProviderApiClient(_factory).WithCustomHeader().GetAsync(endpoint);
         }
 
         public async Task<NhtsaVINdecoderResponce> DecodeVin(string vin)
@@ -118,13 +116,14 @@ namespace Pact.Consumer.MVC.Services
             };
 
             string endpoint = "provider/api/cars/vin";
-            return await ProviderApiClient.WithDefaultHeader().PostAsJsonAsync(_providerUri + endpoint, newVinRequestBody);
+            return await new ProviderApiClient(_factory).WithDefaultHeader().PostAsJsonAsync(endpoint, newVinRequestBody);
         }
 
         private async Task<T> GetData<T>(string endpoint) where T : class, new()
         {
             T result;
-            var streamTask = await ProviderApiClient.WithDefaultHeader().GetStringAsync(_providerUri + endpoint);
+            var streamTask = await new ProviderApiClient(_factory)
+                .WithDefaultHeader().GetStringAsync(endpoint);
 
             result = JsonConvert.DeserializeObject<T>(streamTask);
             return result;

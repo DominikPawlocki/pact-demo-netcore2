@@ -2,8 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Pact.Provider.Api.Models;
 using Pact.Provider.Api.Services;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Linq;
 
 namespace Pact.Provider.Api.Controllers

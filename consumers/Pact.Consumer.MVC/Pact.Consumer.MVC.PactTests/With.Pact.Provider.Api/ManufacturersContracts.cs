@@ -1,56 +1,30 @@
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
+using FluentAssertions;
+using Moq;
 using Pact.Consumer.MVC.Models;
 using Pact.Consumer.MVC.Services;
-using PactNet.Mocks.MockHttpService;
-using PactNet.Mocks.MockHttpService.Models;
+using Pact.Provider.Api;
+using PactNet;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
 {
     [Collection(ConsumerContractsFixture.CollectionName)]
     public class ManufacturersContracts
     {
-        private readonly IMockProviderService _mockProviderService;
-        private readonly string _mockProviderServiceBaseUri;
         private readonly ConsumerContractsFixture _fixture;
-
-        public ManufacturersContracts(ConsumerContractsFixture fixture)
+        Mock<IHttpClientFactory> _mockFactory = new();
+        private readonly NhtsaManufacturersResponce _expected = new NhtsaManufacturersResponce
         {
-            _mockProviderServiceBaseUri = fixture.MockProviderServiceBaseUri;
-            _mockProviderService = fixture.MockProviderService;
-            _fixture = fixture;
-            _mockProviderService.ClearInteractions();
-        }
-
-        [Fact]
-        public async Task When_Getting_Random_20_Manufacturers_Returns_Data()
-        {
-            _mockProviderService
-                .UponReceiving("A GET request to retrieve provider/api/cars/manufacturers/random20")
-                .With(new ProviderServiceRequest
-                {
-                    Method = HttpVerb.Get,
-                    Path = "/provider/api/cars/manufacturers/random20",
-                    Headers = new Dictionary<string, object> {
-                        { "Accept", "application/json" }
-                    }
-                })
-                .WillRespondWith(new ProviderServiceResponse
-                {
-                    Status = (int)HttpStatusCode.OK,
-                    Headers = new Dictionary<string, object> {
-                        { "Content-Type", "application/json; charset=utf-8" },
-                        { "Authorization", "Bearer Ssangyong" }
-                    },
-                    Body = new NhtsaManufacturersResponce
-                    {
-                        Count = 2,
-                        Message = _fixture.SuccessMessage,
-                        SearchCriteria = null,
-                        Results = new[] {
+            Count = 2,
+            Message = ConsumerContractsFixture.SuccessMessage,
+            SearchCriteria = null,
+            Results = new[] {
                             new ManufacturerResult {
                                 Country = "United States (USA)",
                                 Mfr_CommonName = "Chrysler",
@@ -61,14 +35,15 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                                         IsPrimary = true,
                                         Name = "Multipurpose Passenger Vehicle (MPV)"
                                     }
-                                }
+}
                             },
-                            new ManufacturerResult {
+                            new ManufacturerResult
+                            {
                                 Country = "Japan",
                                 Mfr_CommonName = "Mazda",
                                 Mfr_ID = 1041,
                                 Mfr_Name = "Mazda Motor Corporation",
-                                VehicleTypes = new [] {
+                                VehicleTypes = new[] {
                                     new VehicleType {
                                         IsPrimary = true,
                                         Name = "Multipurpose Passenger Vehicle (MPV)"
@@ -76,15 +51,47 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                                 }
                             }
                         }
-                    }
-                });
+        };
 
-            var consumer = new CarService(_mockProviderServiceBaseUri);
-            var result = await consumer.GetManufacturers();
+        public ManufacturersContracts(ConsumerContractsFixture fixture, ITestOutputHelper output)
+        {
+            _fixture = fixture;
+            _fixture.GetOrCreatePactConfig();
+            _fixture.PactBuilder =
+                PactNet.Pact.V4(ConsumerContractsFixture.ConsumerName, ConsumerContractsFixture.ProviderName, _fixture.PactConf)
+                .WithHttpInteractions();
+        }
 
-            Assert.Equal(_fixture.SuccessMessage, result.Message);
+        [Fact]
+        public async Task When_Getting_Random_20_Manufacturers_Returns_Data()
+        {
+            _fixture.PactBuilder
+                        .UponReceiving("A GET request to retrieve provider/api/cars/manufacturers/random20")
+                        .Given("an order with ID {id} exists", new Dictionary<string, string> { ["id"] = "1" })
+                        .WithRequest(HttpMethod.Get, "/provider/api/cars/manufacturers/random20")
+                        .WithHeader("Accept", "application/json")
+                    .WillRespond()
+                        .WithStatus(HttpStatusCode.OK)
+                        .WithJsonBody(_expected);
 
-            _mockProviderService.VerifyInteractions();
+            await _fixture.PactBuilder.VerifyAsync(async ctx =>
+            {
+                _mockFactory
+                    .Setup(f => f.CreateClient(Program.NhtsaPublicApiHttpClientName))
+                    .Returns(() => new HttpClient
+                    {
+                        BaseAddress = ctx.MockServerUri,
+                        DefaultRequestHeaders =
+                        {
+                            Accept = { MediaTypeWithQualityHeaderValue.Parse("application/json") },
+                        }
+                    });
+
+                var consumer = new CarService(_mockFactory.Object);
+                var result = await consumer.GetManufacturers();
+
+                result.Should().BeEquivalentTo(_expected); //--> NOT A PACT ! Unit Test !
+            });
         }
     }
 }

@@ -1,11 +1,13 @@
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
+using FluentAssertions;
+using Moq;
 using Newtonsoft.Json;
 using Pact.Consumer.MVC.Models;
 using Pact.Consumer.MVC.Services;
-using PactNet.Mocks.MockHttpService;
-using PactNet.Mocks.MockHttpService.Models;
+using PactNet;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
@@ -13,16 +15,16 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
     [Collection(ConsumerContractsFixture.CollectionName)]
     public class CarModelsContracts
     {
-        private readonly IMockProviderService _mockProviderService;
-        private readonly string _mockProviderServiceBaseUri;
+        Mock<IHttpClientFactory> _mockFactory = new();
         private readonly ConsumerContractsFixture _fixture;
 
         public CarModelsContracts(ConsumerContractsFixture fixture)
         {
-            _mockProviderServiceBaseUri = fixture.MockProviderServiceBaseUri;
-            _mockProviderService = fixture.MockProviderService;
             _fixture = fixture;
-            _mockProviderService.ClearInteractions();
+            _fixture.GetOrCreatePactConfig();
+            _fixture.PactBuilder =
+                PactNet.Pact.V4(ConsumerContractsFixture.ConsumerName, ConsumerContractsFixture.ProviderName, _fixture.PactConf)
+                .WithHttpInteractions();
         }
 
         [Fact]
@@ -31,29 +33,12 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
             string manufacturer = "tesla";
             int year = 2018;
 
-            _mockProviderService
-                .UponReceiving($"A GET request to provider/api/cars/manufacturers/{manufacturer}/models/{year}")
-                .With(new ProviderServiceRequest
-                {
-                    Method = HttpVerb.Get,
-                    Path = $"/provider/api/cars/manufacturers/{manufacturer}/models/{year}",
-                    Headers = new Dictionary<string, object> {
-                        { "Accept", "application/json" },
-                        { "Authorization", "Bearer Ssangyong" }
-                    },
-                })
-                .WillRespondWith(new ProviderServiceResponse
-                {
-                    Status = (int)HttpStatusCode.OK,
-                    Headers = new Dictionary<string, object> {
-                        { "Content-Type", "application/json; charset=utf-8" }
-                    },
-                    Body = new NhtsaCarModelResponce
-                    {
-                        Count = 3,
-                        Message = _fixture.SuccessMessage,
-                        SearchCriteria = $"Make:Tesla | ModelYear:2018",
-                        Results = new[] {
+            var expectedResponse = new NhtsaCarModelResponce
+            {
+                Count = 3,
+                Message = ConsumerContractsFixture.SuccessMessage,
+                SearchCriteria = $"Make:Tesla | ModelYear:2018",
+                Results = new[] {
                             new ModelResult {
                                 Make_ID = 441,
                                 Make_Name = $"{manufacturer}",
@@ -73,13 +58,29 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                                 Model_Name = "Model 3"
                             }
                         }
-                    }
-                });
+            };
 
-            var consumer = new CarService(_mockProviderServiceBaseUri);
-            var response = await consumer.GetModels(manufacturer, year);
+            _fixture.PactBuilder
+                    .UponReceiving($"A GET request to provider/api/cars/manufacturers/{manufacturer}/models/{year}")
+                    .Given("an order with ID {id} exists", new Dictionary<string, string> { ["id"] = "1" })
+                .WithRequest(HttpMethod.Get, $"/provider/api/cars/manufacturers/{manufacturer}/models/{year}")
+                .WithHeader("Accept", "application/json")
+                .WithHeader("Authorization", "Bearer Ssangyong")
+                    .WillRespond()
+                .WithStatus(HttpStatusCode.OK)
+                .WithHeader("Content-Type", "application/json; charset=utf-8")
+                .WithJsonBody(expectedResponse);
 
-            _mockProviderService.VerifyInteractions();
+            await _fixture.PactBuilder.VerifyAsync(async ctx =>
+            {
+                _fixture.SetupHttpClientMock(_mockFactory, ctx.MockServerUri);
+
+                var consumer = new CarService(_mockFactory.Object);
+                var response = await consumer.GetModels(manufacturer, year);
+
+                var result = JsonConvert.DeserializeObject<NhtsaCarModelResponce>(await response.Content.ReadAsStringAsync());
+                result.Should().BeEquivalentTo(expectedResponse); //--> NOT A PACT ! Unit Test !
+            });
         }
     }
 }

@@ -31,4 +31,11 @@ namespace Pact.Consumer.MVC.Models
         public string Message { get; set; }
         public CarDetails CarDetail { get; set; }
     }
+
+    public class NhtsaVINResponce
+    {
+        public int Id { get; set; }
+        public string Vin { get; set; }
+        public string Message { get; set; }
+    }
 }

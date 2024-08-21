@@ -31,10 +31,10 @@ foreach($pact in $pacts) {
     $providerConsumerUrl = "/pacts/provider/$provider/consumer/$consumer";
 	$addPactUrl = "$providerConsumerUrl/contracts/publish";
 	$addPactUrlFull = "$baseUrl$addPactUrl";
-	Invoke-RestMethod  -Uri $addPactUrlFull -Method POST -Body $pactContent -ContentType "application/json";
+	Invoke-RestMethod  -Uri $addPactUrlFull -Method PUT -Body $pactContent -ContentType "application/json";
 	$tagPactUrl = "/pacticipants/$consumer/versions/$version/tags/$tag";
 	$tagPactUrlFull = "$baseUrl$tagPactUrl";
-	Invoke-RestMethod  -Uri $tagPactUrlFull -Method POST -ContentType "application/json";
+	Invoke-RestMethod  -Uri $tagPactUrlFull -Method PUT -ContentType "application/json";
 	Write-Host "Specific version of pact: $addPactUrlFull"
 	Write-Host "Latest  pact on $tag tag: $baseUrl$providerConsumerUrl/latest/$tag"
 }

@@ -5,24 +5,24 @@ using Microsoft.AspNetCore.Hosting;
 
 namespace Pact.Provider.Api.ConsumerTests
 {
-    public class PactStateStartup
-    {
-        public PactStateStartup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+    //public class PactStateStartup
+    //{
+    //    public PactStateStartup(IConfiguration configuration)
+    //    {
+    //        Configuration = configuration;
+    //    }
 
-        public IConfiguration Configuration { get; }
+    //    public IConfiguration Configuration { get; }
 
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddMvc();
-        }
+    //    public void ConfigureServices(IServiceCollection services)
+    //    {
+    //        services.AddMvc();
+    //    }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
-        {
-            app.UseMiddleware<ProviderStateMiddleware>();
-            app.UseMvc();
-        }
-    }
+    //    public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+    //    {
+    //        app.UseMiddleware<ProviderStateMiddleware>();
+    //        app.UseMvc();
+    //    }
+    //}
 }

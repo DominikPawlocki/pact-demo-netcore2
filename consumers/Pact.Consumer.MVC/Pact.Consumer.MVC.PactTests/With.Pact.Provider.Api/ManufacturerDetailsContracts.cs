@@ -1,12 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Net;
-using System.Threading.Tasks;
+using FluentAssertions;
+using Moq;
 using Newtonsoft.Json;
 using Pact.Consumer.MVC.Models;
 using Pact.Consumer.MVC.Services;
-using PactNet.Mocks.MockHttpService;
-using PactNet.Mocks.MockHttpService.Models;
+using PactNet;
+using System;
+using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
@@ -14,16 +16,16 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
     [Collection(ConsumerContractsFixture.CollectionName)]
     public class ManufacturerDetailsContracts
     {
-        private readonly IMockProviderService _mockProviderService;
-        private readonly string _mockProviderServiceBaseUri;
+        Mock<IHttpClientFactory> _mockFactory = new();
         private readonly ConsumerContractsFixture _fixture;
 
         public ManufacturerDetailsContracts(ConsumerContractsFixture fixture)
         {
-            _mockProviderServiceBaseUri = fixture.MockProviderServiceBaseUri;
-            _mockProviderService = fixture.MockProviderService;
             _fixture = fixture;
-            _mockProviderService.ClearInteractions();
+            _fixture.GetOrCreatePactConfig();
+            _fixture.PactBuilder =
+                PactNet.Pact.V4(ConsumerContractsFixture.ConsumerName, ConsumerContractsFixture.ProviderName, _fixture.PactConf)
+                .WithHttpInteractions();
         }
 
         [Fact]
@@ -31,29 +33,13 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
         {
             string providerResource = "tesla";
 
-            _mockProviderService
-                .UponReceiving($"A GET request to retrieve provider/api/cars/manufacturers/{providerResource}/details")
-                .With(new ProviderServiceRequest
-                {
-                    Method = HttpVerb.Get,
-                    Path = $"/provider/api/cars/manufacturers/{providerResource}/details",
-                    Headers = new Dictionary<string, object> {
-                        { "Accept", "application/json" }
-                    }
-                })
-                .WillRespondWith(new ProviderServiceResponse
-                {
-                    Status = (int)HttpStatusCode.OK,
-                    Headers = new Dictionary<string, object> {
-                        { "Content-Type", "application/json; charset=utf-8" }
-                    },
-                    Body = new NhtsaManufacturerDetailsResponce
-                    {
-                        Count = 1,
-                        Message = _fixture.SuccessMessage,
-                        SearchCriteria = null,
-                        Results = new[] {
-                            new ManufacturerDetailsResult {
+            var expectedResponse = new NhtsaManufacturerDetailsResponce
+            {
+                Count = 1,
+                Message = ConsumerContractsFixture.SuccessMessage,
+                SearchCriteria = null,
+                Results = new[] {
+                    new ManufacturerDetailsResult {
                                 Address = "3500 Deer Creek Road",
                                 City = "Palo Alto",
                                 ContactEmail = "callen@tesla.com",
@@ -73,39 +59,49 @@ namespace Pact.Consumer.MVC.PactTests.With.Pact.Provider.Api
                                 SubmittedPosition = "Managing Counsel, Regulatory"
                             }
                         }
-                    }
-                });
+            };
 
-            // Act
-            var consumer = new CarService(_mockProviderServiceBaseUri);
-            var response = await consumer.GetManufacturerDetails(providerResource);
+            _fixture.PactBuilder
+                .UponReceiving($"A GET request to retrieve provider/api/cars/manufacturers/{providerResource}/details")
+                .Given("an order with ID {id} exists", new Dictionary<string, string> { ["id"] = "1" })
+            .WithRequest(HttpMethod.Get, $"/provider/api/cars/manufacturers/{providerResource}/details")
+            .WithHeader("Accept", "application/json")
+                .WillRespond()
+            .WithStatus(HttpStatusCode.OK)
+            .WithHeader("Content-Type", "application/json; charset=utf-8")
+            .WithJsonBody(expectedResponse);
 
-            _mockProviderService.VerifyInteractions();
+            await _fixture.PactBuilder.VerifyAsync(async ctx =>
+            {
+                _fixture.SetupHttpClientMock(_mockFactory, ctx.MockServerUri);
+
+                var consumer = new CarService(_mockFactory.Object);
+                var response = await consumer.GetManufacturerDetails(providerResource);
+
+                var result = JsonConvert.DeserializeObject<NhtsaManufacturerDetailsResponce>(await response.Content.ReadAsStringAsync());
+                result.Should().BeEquivalentTo(expectedResponse); //--> NOT A PACT ! Unit Test !
+            });
         }
 
         [Fact]
         public async Task Given_Not_Existing_Manufacturer_When_Getting_Manufacturers_Details_Returns_404()
         {
             string providerResource = "fsoo";
-            _mockProviderService
-                .UponReceiving($"A GET request to retrieve provider/api/cars/manufacturers/{providerResource}/details")
-                .With(new ProviderServiceRequest
-                {
-                    Method = HttpVerb.Get,
-                    Path = $"/provider/api/cars/manufacturers/{providerResource}/details",
-                    Headers = new Dictionary<string, object> {
-                        { "Accept", "application/json" }
-                    }
-                })
-                .WillRespondWith(new ProviderServiceResponse
-                {
-                    Status = (int)HttpStatusCode.NotFound,
-                });
 
-            var consumer = new CarService(_mockProviderServiceBaseUri);
-            var response = await consumer.GetManufacturerDetails(providerResource);
+            _fixture.PactBuilder
+               .UponReceiving($"A GET request to retrieve provider/api/cars/manufacturers/{providerResource}/details")
+           .WithRequest(HttpMethod.Get, $"/provider/api/cars/manufacturers/{providerResource}/details")
+           .WithHeader("Accept", "application/json")
+               .WillRespond()
+           .WithStatus(HttpStatusCode.NotFound);
 
-            _mockProviderService.VerifyInteractions();
+            await _fixture.PactBuilder.VerifyAsync(async ctx =>
+            {
+                _fixture.SetupHttpClientMock(_mockFactory, ctx.MockServerUri);
+
+                var consumer = new CarService(_mockFactory.Object);
+                var response = await consumer.GetManufacturerDetails(providerResource);
+            });
         }
     }
 }
